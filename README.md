@@ -1,4 +1,5 @@
 # Eventra — Job Processor
+<img width="1408" height="768" alt="WhatsApp Image 2026-05-30 at 15 13 03 (3)" src="https://github.com/user-attachments/assets/6cf49540-eacb-42fa-bbae-bc42ba9a42c7" />
 
 > Serviço distribuído de processamento de tarefas em background — desenvolvido como resposta ao desafio técnico de **Desenvolvedor Jr C# / ASP.NET** da **F360**.
 
