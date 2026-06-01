@@ -65,7 +65,7 @@
   <h1>Stress test da API</h1>
   <p class="sub">
     Dispara várias requisições em paralelo (complementa o
-    <a href="http://localhost:5000/swagger" target="_blank">Swagger (:5000)</a>).
+    <a href="/swagger/" target="_blank">Swagger</a>).
   </p>
 
   <div class="row">
@@ -104,8 +104,6 @@
   <div id="log"></div>
 
   <script>
-    const API_BASE = 'http://localhost:5000';
-
     const logEl = document.getElementById('log');
     const runBtn = document.getElementById('run');
     const stopBtn = document.getElementById('stop');
@@ -114,28 +112,20 @@
     const presets = {
       'create-report': {
         method: 'POST',
-        url: `${API_BASE}/api/jobs`,
-        body: {
-          type: 'GerarRelatorio',
-          payload: { reportName: 'StressTest', format: 'pdf' }
-        }
+        url: '/api/jobs',
+        body: { type: 'GerarRelatorio', payload: { reportName: 'StressTest', format: 'pdf' } }
       },
       'create-email': {
         method: 'POST',
-        url: `${API_BASE}/api/jobs`,
-        body: {
-          type: 'EnviarEmail',
-          payload: { to: 'teste@exemplo.com', subject: 'Stress test' }
-        }
+        url: '/api/jobs',
+        body: { type: 'EnviarEmail', payload: { to: 'teste@exemplo.com', subject: 'Stress test' } }
       },
-      list: { method: 'GET', url: `${API_BASE}/api/jobs` }
+      list: { method: 'GET', url: '/api/jobs' }
     };
 
     document.getElementById('endpoint').addEventListener('change', (e) => {
       const p = presets[e.target.value];
-      if (p.body) {
-        document.getElementById('payload').value = JSON.stringify(p.body, null, 2);
-      }
+      if (p.body) document.getElementById('payload').value = JSON.stringify(p.body, null, 2);
     });
 
     function log(msg, cls) {
@@ -171,9 +161,7 @@
     }
 
     async function runPool(total, concurrency, config) {
-      let next = 1;
-      let ok = 0;
-      let fail = 0;
+      let next = 1, ok = 0, fail = 0;
       const started = performance.now();
 
       async function worker() {
@@ -185,9 +173,7 @@
         }
       }
 
-      const workers = Array.from({ length: Math.min(concurrency, total) }, () => worker());
-      await Promise.all(workers);
-
+      await Promise.all(Array.from({ length: Math.min(concurrency, total) }, () => worker()));
       const elapsed = Math.round(performance.now() - started);
       log(`\nConcluído: ${ok} OK, ${fail} falhas, ${elapsed} ms total${aborted ? ' (interrompido)' : ''}`);
     }
@@ -198,8 +184,7 @@
       stopBtn.disabled = false;
       const count = Math.min(500, Math.max(1, Number(document.getElementById('count').value) || 1));
       const concurrency = Math.min(100, Math.max(1, Number(document.getElementById('concurrency').value) || 1));
-      const endpoint = document.getElementById('endpoint').value;
-      const config = presets[endpoint];
+      const config = presets[document.getElementById('endpoint').value];
       log(`Iniciando ${count} requisições (${concurrency} em paralelo) → ${config.method} ${config.url}`);
       await runPool(count, concurrency, config);
       runBtn.disabled = false;
@@ -212,9 +197,7 @@
       log('Interrompendo após requisições em andamento…');
     });
 
-    document.getElementById('clear').addEventListener('click', () => {
-      logEl.innerHTML = '';
-    });
+    document.getElementById('clear').addEventListener('click', () => { logEl.innerHTML = ''; });
   </script>
 </body>
 </html>
